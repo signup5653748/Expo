@@ -1,0 +1,51 @@
+name: Create Expo App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Expo project
+        run: npx create-expo-app@latest . --yes
+
+      - name: Create Hello World screen
+        run: |
+          cat > app/index.tsx <<'EOF'
+          import { StyleSheet, Text, View } from 'react-native';
+
+          export default function HomeScreen() {
+            return (
+              <View style={styles.container}>
+                <Text style={styles.title}>Hello World 👋</Text>
+                <Text>My first Expo app</Text>
+              </View>
+            );
+          }
+
+          const styles = StyleSheet.create({
+            container: {
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            title: {
+              fontSize: 32,
+              fontWeight: 'bold',
+              marginBottom: 10,
+            },
+          });
+          EOF
+
+      - name: Commit project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Create Expo Hello World app" || echo "Nothing to commit"
+          git push
