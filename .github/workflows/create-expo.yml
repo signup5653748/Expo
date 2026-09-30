@@ -12,11 +12,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create Expo project
-        run: npx create-expo-app@latest . --yes
+        run: npx create-expo-app@latest expo-app --yes
 
       - name: Create Hello World screen
         run: |
-          cat > app/index.tsx <<'EOF'
+          cat > expo-app/app/index.tsx <<'EOF'
           import { StyleSheet, Text, View } from 'react-native';
 
           export default function HomeScreen() {
@@ -42,10 +42,15 @@ jobs:
           });
           EOF
 
+      - name: Copy Expo project to repository
+        run: |
+          cp -R expo-app/. .
+          rm -rf expo-app
+
       - name: Commit project
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+users.noreply.github.com"
           git add .
           git commit -m "Create Expo Hello World app" || echo "Nothing to commit"
           git push
